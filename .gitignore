@@ -23,3 +23,7 @@ models/*.joblib
 .DS_Store
 .vscode/
 *.log
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
