@@ -41,22 +41,46 @@ See [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb) for the full analysis.
 - Squads change season to season (promotion/relegation), so features should use
   **rolling recent form** rather than full-history team averages.
 
+## Feature engineering
+
+See [`notebooks/02_feature_validation.ipynb`](notebooks/02_feature_validation.ipynb)
+and [`data/README.md`](data/README.md#processed-data) for the full feature
+dictionary. Highlights:
+
+- **Recent form** (last 5 matches, any venue) and **venue-specific strength**
+  (last 5 home matches for the home team, last 5 away matches for the away
+  team) — every rolling stat is shifted so a match's features never include
+  its own result (no leakage; see `tests/test_features.py`).
+- **`proxy_xg_home` / `proxy_xg_away`**: a Dixon-Coles-style expected-goals
+  proxy (attack strength x defence weakness x league average). It's well
+  *calibrated* on average (mean 1.61 vs actual 1.60 home goals/match) and
+  correctly *ranks* matches by attacking threat, but — as expected for
+  single-match football outcomes — isn't a strong point predictor on its own.
+  It's built to feed into a model alongside the other features, not to be
+  read as a prediction by itself.
+- The **current, in-progress season is kept out of training** entirely
+  (`data/live/`, fetched separately) — see `data/README.md` for why.
+
 ## Project structure
 
 ```
 .
 ├── .github/workflows/    # CI: lint (ruff) + tests (pytest) on every push/PR
 ├── data/
-│   ├── raw/               # Raw season CSVs from football-data.co.uk (gitignored)
-│   └── processed/         # Cleaned, merged dataset (matches.csv, gitignored)
+│   ├── raw/                # Raw season CSVs, 5 completed seasons (gitignored)
+│   ├── processed/          # Cleaned dataset + feature table (gitignored)
+│   └── live/               # Current in-progress season, fetched separately (gitignored)
 ├── notebooks/
-│   └── 01_eda.ipynb       # Exploratory analysis with visualizations
+│   ├── 01_eda.ipynb        # Exploratory analysis with visualizations
+│   └── 02_feature_validation.ipynb  # Validates the engineered features / xG proxy
 ├── scripts/
-│   ├── download_data.py   # Fetches the raw season CSVs
-│   └── build_dataset.py   # Cleans + merges seasons into data/processed/matches.csv
+│   ├── download_data.py    # Fetches season CSVs (--output-dir for live data)
+│   ├── build_dataset.py    # Cleans + merges seasons into data/processed/matches.csv
+│   └── build_features.py   # Builds data/processed/features.csv
 ├── src/
-│   └── data_loader.py     # Reusable loading/cleaning functions (unit tested)
-├── tests/                 # pytest unit tests
+│   ├── data_loader.py      # Reusable loading/cleaning functions (unit tested)
+│   └── features.py         # Feature engineering: form, strength, xG proxy (unit tested)
+├── tests/                  # pytest unit tests
 ├── models/                 # Saved trained models (gitignored)
 ├── requirements.txt
 └── README.md
@@ -78,11 +102,15 @@ python scripts/download_data.py
 # 4. Build the cleaned, merged dataset
 python scripts/build_dataset.py
 
-# 5. Run the tests
+# 5. Build the feature table
+python scripts/build_features.py
+
+# 6. Run the tests
 pytest -v
 ```
 
-Then open `notebooks/01_eda.ipynb` to explore the data.
+Then open `notebooks/01_eda.ipynb` and `notebooks/02_feature_validation.ipynb`
+to explore the data and the engineered features.
 
 ## Status
 
@@ -91,7 +119,7 @@ Then open `notebooks/01_eda.ipynb` to explore the data.
 - [x] Data cleaning, validation and merging (`src/data_loader.py`, unit tested)
 - [x] Exploratory data analysis notebook
 - [x] CI pipeline (lint + tests on every push)
-- [ ] Feature engineering (form, shot quality / xG proxy, home advantage)
+- [x] Feature engineering (form, venue-specific strength, xG proxy — unit tested)
 - [ ] Expected goals models (home/away)
 - [ ] Match outcome probability model (W/D/L)
 - [ ] Model evaluation vs. bookmaker odds

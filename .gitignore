@@ -11,8 +11,10 @@ env/
 # Data (regenerate with scripts/download_data.py)
 data/raw/*.csv
 data/processed/*.csv
+data/live/*.csv
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+!data/live/.gitkeep
 
 # Models
 models/*.pkl

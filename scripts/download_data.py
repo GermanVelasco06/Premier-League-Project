@@ -20,6 +20,7 @@ BASE_URL = "https://www.football-data.co.uk/mmz4281/{season}/E0.csv"
 # football-data.co.uk season codes: "2122" = 2021-22, ... "2526" = 2025-26
 DEFAULT_SEASONS = ["2122", "2223", "2324", "2425", "2526"]
 RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
+LIVE_DIR = Path(__file__).resolve().parent.parent / "data" / "live"
 
 
 def season_label(code: str) -> str:
@@ -27,10 +28,10 @@ def season_label(code: str) -> str:
     return f"20{code[:2]}-{code[2:]}"
 
 
-def download_season(session: requests.Session, season: str) -> Path:
+def download_season(session: requests.Session, season: str, out_dir: Path) -> Path:
     url = BASE_URL.format(season=season)
     label = season_label(season)
-    dest = RAW_DIR / f"E0_{label}.csv"
+    dest = out_dir / f"E0_{label}.csv"
 
     print(f"Downloading {label} season from {url} ...")
     response = session.get(url, timeout=30)
@@ -54,9 +55,19 @@ def main() -> int:
             "(default: last 5 completed seasons, 2021-22 to 2025-26)"
         ),
     )
+    parser.add_argument(
+        "--output-dir",
+        default=str(RAW_DIR),
+        help=(
+            "Where to save the CSVs. Use the default (data/raw) for the 5 completed "
+            "training seasons, or data/live for the current in-progress season "
+            "(kept separate so it never leaks into the training dataset)."
+        ),
+    )
     args = parser.parse_args()
 
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir = Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     session = requests.Session()
     session.headers.update({"User-Agent": "Mozilla/5.0 (compatible; PL-Prediction-Project/1.0)"})
@@ -64,7 +75,7 @@ def main() -> int:
     failed: list[str] = []
     for season in args.seasons:
         try:
-            download_season(session, season)
+            download_season(session, season, out_dir)
         except requests.RequestException as exc:
             print(f"  ERROR downloading {season_label(season)}: {exc}", file=sys.stderr)
             failed.append(season)
@@ -73,7 +84,7 @@ def main() -> int:
         print(f"\n{len(failed)} season(s) failed: {', '.join(failed)}", file=sys.stderr)
         return 1
 
-    print(f"\nDone. {len(args.seasons)} season(s) downloaded to {RAW_DIR}")
+    print(f"\nDone. {len(args.seasons)} season(s) downloaded to {out_dir}")
     return 0
 
 
