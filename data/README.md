@@ -62,8 +62,12 @@ never committed). Then:
 
 ```bash
 python scripts/download_clubs.py
-python scripts/download_clubs.py --season 2025   # a different season
+python scripts/download_clubs.py --season 2023   # a different season
 ```
+
+Note: free API-Football plans only allow seasons **2022 to 2024** — the
+script defaults to 2024. Requesting 2025/2026 returns a clear error
+telling you the same thing.
 
 This saves the raw API response (`data/clubs/teams_<season>_raw.json`) and a
 cleaned CSV (`data/clubs/teams_<season>.csv`) with one row per club: `team_id`,

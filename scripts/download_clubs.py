@@ -26,7 +26,8 @@ from dotenv import load_dotenv
 
 API_URL = "https://v3.football.api-sports.io/teams"
 PREMIER_LEAGUE_ID = 39  # API-Football's id for the English Premier League
-CURRENT_SEASON = 2026   # season start year, e.g. 2026 = the 2026-27 season
+CURRENT_SEASON = 2024   # season start year, e.g. 2024 = the 2024-25 season.
+                        # Free API-Football plans only allow seasons 2022-2024.
 CLUBS_DIR = Path(__file__).resolve().parent.parent / "data" / "clubs"
 
 
@@ -90,7 +91,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Download PL club info from API-Football")
     parser.add_argument(
         "--season", type=int, default=CURRENT_SEASON,
-        help="Season start year (default: 2026)",
+        help="Season start year (default: 2024; free plans only allow 2022-2024)",
     )
     parser.add_argument(
         "--league", type=int, default=PREMIER_LEAGUE_ID,
