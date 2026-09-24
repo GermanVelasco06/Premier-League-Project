@@ -69,12 +69,14 @@ dictionary. Highlights:
 ├── data/
 │   ├── raw/                # Raw season CSVs, 5 completed seasons (gitignored)
 │   ├── processed/          # Cleaned dataset + feature table (gitignored)
-│   └── live/               # Current in-progress season, fetched separately (gitignored)
+│   ├── live/                # Current in-progress season, fetched separately (gitignored)
+│   └── clubs/               # Club info from API-Football (gitignored)
 ├── notebooks/
 │   ├── 01_eda.ipynb        # Exploratory analysis with visualizations
 │   └── 02_feature_validation.ipynb  # Validates the engineered features / xG proxy
 ├── scripts/
 │   ├── download_data.py    # Fetches season CSVs (--output-dir for live data)
+│   ├── download_clubs.py   # Fetches club info from API-Football
 │   ├── build_dataset.py    # Cleans + merges seasons into data/processed/matches.csv
 │   └── build_features.py   # Builds data/processed/features.csv
 ├── src/

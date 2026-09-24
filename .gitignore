@@ -12,9 +12,15 @@ env/
 data/raw/*.csv
 data/processed/*.csv
 data/live/*.csv
+data/clubs/*.csv
+data/clubs/*.json
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/live/.gitkeep
+!data/clubs/.gitkeep
+
+# Secrets
+.env
 
 # Models
 models/*.pkl

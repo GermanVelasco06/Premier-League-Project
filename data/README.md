@@ -50,6 +50,26 @@ Key columns used in this project (full odds columns are also present but not all
 
 Full column glossary: https://www.football-data.co.uk/notes.txt
 
+## Club information (API-Football)
+
+`data/clubs/` holds club-level info (crest, home venue, founding year, etc.)
+from [API-Football](https://www.api-football.com/) (v3, api-sports.io) — a
+richer complement to football-data.co.uk, which only has match results.
+
+Requires a free API-Football key. Copy `.env.example` to `.env` in the project
+root and set `API_FOOTBALL_KEY=your_key` (`.env` is gitignored — your key is
+never committed). Then:
+
+```bash
+python scripts/download_clubs.py
+python scripts/download_clubs.py --season 2025   # a different season
+```
+
+This saves the raw API response (`data/clubs/teams_<season>_raw.json`) and a
+cleaned CSV (`data/clubs/teams_<season>.csv`) with one row per club: `team_id`,
+`name`, `code`, `country`, `founded`, `logo`, `venue_name`, `venue_city`,
+`venue_capacity`. Both are gitignored, same as the match data.
+
 ## Processed data
 
 `data/processed/matches.csv` — the 5 seasons cleaned and merged into one table
