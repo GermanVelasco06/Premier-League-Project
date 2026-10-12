@@ -66,15 +66,17 @@ dictionary. Highlights:
 
 ## BI dashboard (Power BI)
 
-Alongside the Python/pandas EDA, there's a complementary
-[Power BI dashboard](https://app.powerbi.com/groups/me/reports/54d849d0-fc55-42ea-8f3e-62dadfa47a69?ctid=4a5378f9-29f4-4d3e-be89-669d03ada9d8&pbi_source=linkShare)
+Alongside the Python/pandas EDA, there's a complementary Power BI dashboard
 built on the same data (`data/processed/matches.csv` and
 `data/clubs/teamsData.xlsx` — a small hand-built table of team name, founding
 year, city, stadium and capacity, keyed on the same team names used in the
 match data). This is a visual complement, not a replacement — all features
-and models are still built in Python. Note: this link currently points to a
-report inside a specific Power BI tenant, so it may require signing in with
-an account in that organization to view; it isn't published to the public web.
+and models are still built in Python.
+
+The report itself lives in an organizational Power BI tenant that doesn't
+allow public "Publish to web" links, so a static export is included instead:
+[`reports/premier_league_dashboard.pdf`](reports/premier_league_dashboard.pdf)
+(outcome distribution, goals per season, and team-level breakdowns).
 
 ## Project structure
 
@@ -87,6 +89,8 @@ an account in that organization to view; it isn't published to the public web.
 │   ├── live/                # Current in-progress season, fetched separately (gitignored)
 │   └── clubs/               # Club info from API-Football (CSV/JSON gitignored)
 │       └── teamsData.xlsx   # Hand-built club reference table, used by the Power BI dashboard (tracked)
+├── reports/
+│   └── premier_league_dashboard.pdf  # Static export of the Power BI dashboard
 ├── notebooks/
 │   ├── 01_eda.ipynb        # Exploratory analysis with visualizations
 │   ├── correlaciones.csv   # Full pairwise correlation matrix, exported from 01_eda.ipynb
