@@ -73,11 +73,12 @@ dictionary. Highlights:
 ## BI dashboard (Power BI)
 
 Alongside the Python/pandas EDA, there's a complementary Power BI dashboard
-built on the same data (`data/processed/matches.csv` and
+built on the same data (`data/processed/matches.csv`,
 `data/clubs/teamsData.xlsx` — a small hand-built table of team name, founding
-year, city, stadium and capacity, keyed on the same team names used in the
-match data). This is a visual complement, not a replacement — all features
-and models are still built in Python.
+year, city, stadium and capacity — and, optionally,
+`data/processed/weather.csv` for kickoff-time weather, 1:1 on `match_id`).
+This is a visual complement, not a replacement — all features and models
+are still built in Python.
 
 The report itself lives in an organizational Power BI tenant that doesn't
 allow public "Publish to web" links, so a static export is included instead:
@@ -108,7 +109,8 @@ allow public "Publish to web" links, so a static export is included instead:
 │   ├── download_clubs.py   # Fetches club info from API-Football
 │   ├── download_weather.py # Fetches hourly weather per stadium (Open-Meteo / ERA5)
 │   ├── build_dataset.py    # Cleans + merges seasons into data/processed/matches.csv
-│   └── build_features.py   # Builds data/processed/features.csv (--with-weather to add weather)
+│   ├── build_features.py   # Builds data/processed/features.csv (--with-weather to add weather)
+│   └── build_weather_table.py  # Builds data/processed/weather.csv, one row per match (for Power BI)
 ├── src/
 │   ├── data_loader.py      # Reusable loading/cleaning functions (unit tested)
 │   ├── features.py         # Feature engineering: form, strength, xG proxy (unit tested)

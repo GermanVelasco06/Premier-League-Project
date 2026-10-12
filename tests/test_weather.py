@@ -120,6 +120,19 @@ def test_add_weather_features_matches_nearest_hour_and_default_kickoff(tmp_path)
     assert result.loc[result["match_id"] == 2, "weather_temp_c"].iloc[0] == 20.0
 
 
+def test_add_weather_features_keep_venue_name(tmp_path):
+    coords_path = write_coords(tmp_path)
+    weather_dir = write_arsenal_weather(tmp_path)
+
+    result = add_weather_features(
+        make_matches(), weather_dir=weather_dir, coords_path=coords_path,
+        keep_venue_name=True,
+    )
+
+    assert "venue_name" in result.columns
+    assert (result["venue_name"] == "Emirates Stadium").all()
+
+
 def test_add_weather_features_missing_weather_file_gives_nan(tmp_path):
     coords_path = write_coords(tmp_path)
     empty_weather_dir = tmp_path / "no_weather_here"

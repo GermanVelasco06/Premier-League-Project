@@ -109,6 +109,7 @@ def add_weather_features(
     weather_dir: Path = WEATHER_DIR,
     coords_path: Path = STADIUM_COORDS_PATH,
     default_kickoff: str = DEFAULT_KICKOFF,
+    keep_venue_name: bool = False,
 ) -> pd.DataFrame:
     """Attach kickoff-time weather (temperature, precipitation, wind speed)
     to every match, matched by the home team's stadium, date, and kickoff
@@ -153,7 +154,13 @@ def add_weather_features(
     result = pd.concat(parts, ignore_index=True)
     sort_col = "match_id" if "match_id" in result.columns else "_kickoff_dt"
     result = result.sort_values(sort_col).reset_index(drop=True)
-    return result.drop(columns=["_kickoff_dt", "_venue_name", "time"], errors="ignore")
+
+    drop_cols = ["_kickoff_dt", "time"]
+    if keep_venue_name:
+        result = result.rename(columns={"_venue_name": "venue_name"})
+    else:
+        drop_cols.append("_venue_name")
+    return result.drop(columns=drop_cols, errors="ignore")
 
 
 def _venue_name_for(team: str, season: str, coords: pd.DataFrame) -> str | None:

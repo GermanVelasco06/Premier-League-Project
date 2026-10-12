@@ -119,6 +119,22 @@ kickoff time fall back to 15:00, the most common Premier League kickoff. A
 match more than 3 hours from the nearest reading, or whose stadium has no
 weather file, gets `NaN` rather than a guessed value.
 
+### A single weather table, for BI tools
+
+`scripts/build_weather_table.py` builds `data/processed/weather.csv`: one
+row per match (`match_id`, `date`, `season`, `home_team`, `away_team`,
+`venue_name`, `weather_temp_c`, `weather_precip_mm`, `weather_wind_kmh`) --
+the same grain as `matches.csv`. In Power BI (or any BI tool), import both
+and relate them on `match_id` (1:1) to explore weather against results and
+goals without any extra modelling.
+
+```bash
+python scripts/build_weather_table.py
+```
+
+It prints a coverage summary (how many matches actually got a weather
+match) so a silent gap doesn't quietly skew the dashboard.
+
 ## Processed data
 
 `data/processed/matches.csv` — the 5 seasons cleaned and merged into one table
