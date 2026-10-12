@@ -30,6 +30,22 @@ CURRENT_SEASON = 2024   # season start year, e.g. 2024 = the 2024-25 season.
                         # Free API-Football plans only allow seasons 2022-2024.
 CLUBS_DIR = Path(__file__).resolve().parent.parent / "data" / "clubs"
 
+# API-Football club name -> name used in the football-data.co.uk match data
+# (HomeTeam/AwayTeam). Clubs not listed here use the same name in both sources.
+MATCH_NAME_MAP = {
+    "Manchester United": "Man United",
+    "Manchester City": "Man City",
+    "Nottingham Forest": "Nott'm Forest",
+    "Sheffield Utd": "Sheffield United",
+}
+
+
+def to_match_name(api_name: str | None) -> str | None:
+    """Return the club name as it appears in the match data."""
+    if api_name is None:
+        return None
+    return MATCH_NAME_MAP.get(api_name, api_name)
+
 
 def fetch_clubs(api_key: str, season: int, league_id: int) -> dict:
     """Call the API-Football /teams endpoint and return the parsed JSON payload."""
@@ -53,6 +69,7 @@ def clean_clubs(payload: dict) -> list[dict]:
             {
                 "team_id": team.get("id"),
                 "name": team.get("name"),
+                "match_name": to_match_name(team.get("name")),
                 "code": team.get("code"),
                 "country": team.get("country"),
                 "founded": team.get("founded"),
@@ -75,7 +92,7 @@ def save_clubs(payload: dict, season: int) -> tuple[Path, Path]:
     records = clean_clubs(payload)
     csv_path = CLUBS_DIR / f"teams_{season}.csv"
     fieldnames = list(records[0].keys()) if records else [
-        "team_id", "name", "code", "country", "founded", "logo",
+        "team_id", "name", "match_name", "code", "country", "founded", "logo",
         "venue_name", "venue_city", "venue_capacity",
     ]
     with csv_path.open("w", newline="") as f:

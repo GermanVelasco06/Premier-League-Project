@@ -44,6 +44,8 @@ def test_clean_clubs_flattens_expected_fields():
     assert records[0]["team_id"] == 42
     assert records[0]["venue_name"] == "Emirates Stadium"
     assert records[0]["venue_capacity"] == 60704
+    assert records[0]["match_name"] == "Arsenal"
+    assert records[1]["match_name"] == "Man City"
 
 
 def test_clean_clubs_handles_empty_response():
@@ -55,3 +57,9 @@ def test_clean_clubs_handles_missing_venue():
     payload = {"response": [{"team": {"id": 1, "name": "Test FC"}}]}
     records = clean_clubs(payload)
     assert records[0]["venue_name"] is None
+
+
+def test_clean_clubs_handles_missing_name():
+    payload = {"response": [{"team": {"id": 1}}]}
+    records = clean_clubs(payload)
+    assert records[0]["match_name"] is None

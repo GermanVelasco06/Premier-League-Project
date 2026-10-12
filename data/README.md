@@ -71,8 +71,18 @@ telling you the same thing.
 
 This saves the raw API response (`data/clubs/teams_<season>_raw.json`) and a
 cleaned CSV (`data/clubs/teams_<season>.csv`) with one row per club: `team_id`,
-`name`, `code`, `country`, `founded`, `logo`, `venue_name`, `venue_city`,
-`venue_capacity`. Both are gitignored, same as the match data.
+`name`, `match_name`, `code`, `country`, `founded`, `logo`, `venue_name`,
+`venue_city`, `venue_capacity`. Both are gitignored, same as the match data.
+`match_name` maps the API-Football club name to the name used in the match
+data (e.g. "Manchester United" -> "Man United"), via `MATCH_NAME_MAP` in
+`scripts/download_clubs.py`, so club info can be joined onto `matches.csv`
+without manual renaming.
+
+`data/clubs/teamsData.xlsx` is a small, hand-built reference table (team
+name in `match_name` form, founding year, city, stadium, capacity) used as
+the data source for the Tableau exploration below — unlike the auto-fetched
+CSV/JSON above, this one **is** committed, since it's a curated artifact
+rather than a regenerable download.
 
 ## Processed data
 

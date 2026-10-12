@@ -40,6 +40,9 @@ See [`notebooks/01_eda.ipynb`](notebooks/01_eda.ipynb) for the full analysis.
   linear regression.
 - Squads change season to season (promotion/relegation), so features should use
   **rolling recent form** rather than full-history team averages.
+- A full pairwise correlation matrix across every numeric column (not just the
+  shot stats above) is exported to `notebooks/correlaciones.csv` for deeper
+  digging — e.g. half-time goals correlate with full-time goals at 0.69.
 
 ## Feature engineering
 
@@ -61,6 +64,15 @@ dictionary. Highlights:
 - The **current, in-progress season is kept out of training** entirely
   (`data/live/`, fetched separately) — see `data/README.md` for why.
 
+## Tableau exploration
+
+Alongside the Python/pandas EDA, `notebooks/EDA.twb` is a Tableau workbook for
+visual exploration — a complement to the notebooks, not a replacement; all
+features and models are still built in Python. It reads `data/processed/matches.csv`
+and `data/clubs/teamsData.xlsx` (a small hand-built table of team name, founding
+year, city, stadium and capacity, keyed on the same team names used in the
+match data). Open it with Tableau Desktop/Public.
+
 ## Project structure
 
 ```
@@ -70,9 +82,12 @@ dictionary. Highlights:
 │   ├── raw/                # Raw season CSVs, 5 completed seasons (gitignored)
 │   ├── processed/          # Cleaned dataset + feature table (gitignored)
 │   ├── live/                # Current in-progress season, fetched separately (gitignored)
-│   └── clubs/               # Club info from API-Football (gitignored)
+│   └── clubs/               # Club info from API-Football (CSV/JSON gitignored)
+│       └── teamsData.xlsx   # Hand-built club reference table, used by EDA.twb (tracked)
 ├── notebooks/
 │   ├── 01_eda.ipynb        # Exploratory analysis with visualizations
+│   ├── correlaciones.csv   # Full pairwise correlation matrix, exported from 01_eda.ipynb
+│   ├── EDA.twb              # Tableau workbook: complementary visual exploration
 │   └── 02_feature_validation.ipynb  # Validates the engineered features / xG proxy
 ├── scripts/
 │   ├── download_data.py    # Fetches season CSVs (--output-dir for live data)
