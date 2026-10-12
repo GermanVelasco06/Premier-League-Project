@@ -37,6 +37,17 @@ def test_load_season_file(tmp_path):
     assert df["season"].unique().tolist() == ["2023-24"]
 
 
+def test_load_season_file_keeps_kickoff_time(tmp_path):
+    csv_path = tmp_path / "E0_2023-24.csv"
+    csv_path.write_text(RAW_CSV)
+
+    df = load_season_file(csv_path)
+
+    assert "kickoff_time" in df.columns
+    assert df.loc[0, "kickoff_time"] == "20:00"
+    assert df.loc[1, "kickoff_time"] == "12:30"
+
+
 def test_load_season_file_missing_columns(tmp_path):
     csv_path = tmp_path / "E0_2023-24.csv"
     csv_path.write_text("Div,Date,HomeTeam\nE0,11/08/2023,Burnley\n")

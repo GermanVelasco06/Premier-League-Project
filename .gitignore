@@ -14,10 +14,13 @@ data/processed/*.csv
 data/live/*.csv
 data/clubs/*.csv
 data/clubs/*.json
+data/weather/*.csv
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/live/.gitkeep
 !data/clubs/.gitkeep
+!data/clubs/stadium_coords.csv
+!data/weather/.gitkeep
 
 # Secrets
 .env

@@ -84,6 +84,41 @@ the data source for the Power BI dashboard (see main `README.md`) — unlike
 the auto-fetched CSV/JSON above, this one **is** committed, since it's a
 curated artifact rather than a regenerable download.
 
+## Weather (ERA5 via Open-Meteo)
+
+`data/weather/` holds hourly weather (temperature, precipitation, wind speed)
+for every stadium a team played home matches at, from
+[Open-Meteo's historical weather API](https://open-meteo.com/en/docs/historical-weather-api)
+-- free, no API key required. Open-Meteo doesn't produce the data itself; it
+re-serves **ERA5**, the climate reanalysis from Copernicus/ECMWF -- not a
+government feed, but the standard reference dataset used in climate
+research. Cite it as:
+
+> ERA5 reanalysis (Copernicus/ECMWF), accessed via Open-Meteo
+
+Stadium coordinates live in `data/clubs/stadium_coords.csv` -- a small,
+hand-built table (one row per team, two for Everton, who moved from Goodison
+Park to the Hill Dickinson Stadium for the 2025-26 season; the `season_from`
+/ `season_to` columns say which venue applies when). This **is** committed,
+same reasoning as `teamsData.xlsx`: it's curated, not a regenerable
+download.
+
+```bash
+python scripts/download_data.py
+python scripts/build_dataset.py
+python scripts/download_weather.py       # one call per stadium, full date range
+python scripts/build_features.py --with-weather
+```
+
+`download_weather.py` figures out each stadium's actual date range from
+`data/processed/matches.csv` (respecting the season window above) and saves
+one gitignored CSV per venue to `data/weather/<venue_slug>.csv`. Matches are
+then joined to the nearest hourly reading at **kickoff time**
+(`src/weather.py::add_weather_features`) -- older seasons without a recorded
+kickoff time fall back to 15:00, the most common Premier League kickoff. A
+match more than 3 hours from the nearest reading, or whose stadium has no
+weather file, gets `NaN` rather than a guessed value.
+
 ## Processed data
 
 `data/processed/matches.csv` — the 5 seasons cleaned and merged into one table

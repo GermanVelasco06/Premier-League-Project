@@ -63,6 +63,12 @@ dictionary. Highlights:
   read as a prediction by itself.
 - The **current, in-progress season is kept out of training** entirely
   (`data/live/`, fetched separately) — see `data/README.md` for why.
+- **Weather at kickoff** (`weather_temp_c`, `weather_precip_mm`,
+  `weather_wind_kmh`): hourly ERA5 reanalysis data (Copernicus/ECMWF,
+  accessed via [Open-Meteo](https://open-meteo.com/en/docs/historical-weather-api)),
+  matched to each match's stadium and kickoff time — optional, via
+  `scripts/download_weather.py` and `build_features.py --with-weather`
+  (see `data/README.md`).
 
 ## BI dashboard (Power BI)
 
@@ -87,8 +93,10 @@ allow public "Publish to web" links, so a static export is included instead:
 │   ├── raw/                # Raw season CSVs, 5 completed seasons (gitignored)
 │   ├── processed/          # Cleaned dataset + feature table (gitignored)
 │   ├── live/                # Current in-progress season, fetched separately (gitignored)
-│   └── clubs/               # Club info from API-Football (CSV/JSON gitignored)
-│       └── teamsData.xlsx   # Hand-built club reference table, used by the Power BI dashboard (tracked)
+│   ├── clubs/                # Club info from API-Football (CSV/JSON gitignored)
+│   │   ├── teamsData.xlsx    # Hand-built club reference table, used by the Power BI dashboard (tracked)
+│   │   └── stadium_coords.csv  # Hand-built stadium lat/long, used for weather (tracked)
+│   └── weather/              # Hourly weather per stadium, ERA5 via Open-Meteo (gitignored)
 ├── reports/
 │   └── premier_league_dashboard.pdf  # Static export of the Power BI dashboard
 ├── notebooks/
@@ -98,11 +106,13 @@ allow public "Publish to web" links, so a static export is included instead:
 ├── scripts/
 │   ├── download_data.py    # Fetches season CSVs (--output-dir for live data)
 │   ├── download_clubs.py   # Fetches club info from API-Football
+│   ├── download_weather.py # Fetches hourly weather per stadium (Open-Meteo / ERA5)
 │   ├── build_dataset.py    # Cleans + merges seasons into data/processed/matches.csv
-│   └── build_features.py   # Builds data/processed/features.csv
+│   └── build_features.py   # Builds data/processed/features.csv (--with-weather to add weather)
 ├── src/
 │   ├── data_loader.py      # Reusable loading/cleaning functions (unit tested)
-│   └── features.py         # Feature engineering: form, strength, xG proxy (unit tested)
+│   ├── features.py         # Feature engineering: form, strength, xG proxy (unit tested)
+│   └── weather.py          # Joins hourly weather to matches by kickoff time (unit tested)
 ├── tests/                  # pytest unit tests
 ├── models/                 # Saved trained models (gitignored)
 ├── requirements.txt
@@ -143,6 +153,7 @@ to explore the data and the engineered features.
 - [x] Exploratory data analysis notebook
 - [x] CI pipeline (lint + tests on every push)
 - [x] Feature engineering (form, venue-specific strength, xG proxy — unit tested)
+- [x] Weather features (ERA5 via Open-Meteo, joined by stadium + kickoff time — unit tested)
 - [ ] Expected goals models (home/away)
 - [ ] Match outcome probability model (W/D/L)
 - [ ] Model evaluation vs. bookmaker odds

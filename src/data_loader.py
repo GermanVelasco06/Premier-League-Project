@@ -19,6 +19,7 @@ PROCESSED_DIR = Path(__file__).resolve().parent.parent / "data" / "processed"
 # markets) are dropped.
 COLUMNS: dict[str, str] = {
     "Date": "date",
+    "Time": "kickoff_time",
     "HomeTeam": "home_team",
     "AwayTeam": "away_team",
     "FTHG": "home_goals",
