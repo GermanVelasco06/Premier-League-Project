@@ -80,9 +80,9 @@ without manual renaming.
 
 `data/clubs/teamsData.xlsx` is a small, hand-built reference table (team
 name in `match_name` form, founding year, city, stadium, capacity) used as
-the data source for the Tableau exploration below — unlike the auto-fetched
-CSV/JSON above, this one **is** committed, since it's a curated artifact
-rather than a regenerable download.
+the data source for the Power BI dashboard (see main `README.md`) — unlike
+the auto-fetched CSV/JSON above, this one **is** committed, since it's a
+curated artifact rather than a regenerable download.
 
 ## Processed data
 
